@@ -22,3 +22,8 @@ dados_capes_cc.info()
 dados_capes_cc.describe()
 
 dados_capes_cc['internados'].plot(kind="hist")
+
+#Dados Relativos à pandemia COVID-19 no Brasil
+#Página do dado: https://raw.githubusercontent.com/henriquemor/covid19-Brazil-timeseries/refs/heads/master/confirmed-cases.csv
+dados_capes_cc = pd.read_csv("https://raw.githubusercontent.com/henriquemor/covid19-Brazil-timeseries/refs/heads/master/confirmed-cases.csv")
+dados_capes_cc.head(15)
