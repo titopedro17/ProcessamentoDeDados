@@ -28,32 +28,34 @@ dados_capes_cc.info()
 
 dados_capes_cc.describe()
 
-#Estilo
+# Estilo
 sns.set(style='whitegrid')
 plt.rcParams["figure.figsize"] = (14,6)
 
-#Filtrando Colunas
-dados = dados[['location', 'date', 'new_deaths_smoothed', 'people_vaccinated']]
+# Filtrando colunas
+dados_capes_cc = dados_capes_cc[['location', 'date', 'new_deaths_smoothed', 'people_vaccinated']]
 
-#Selecionar Países de Interesse
-paises = ['Portugal', 'Chile', 'Brazil', 'Russia']
-dados = dados_capes_cc[dados_capes_cc['location'].isin(paises)]
-
-#Converter data para datetime
+# Converter data para datetime
 dados_capes_cc['date'] = pd.to_datetime(dados_capes_cc['date'])
 
+# Selecionar países de interesse (reutilizando a lista que você já criou antes)
+paises_desejados = ['Portugal', 'Chile', 'Brazil', 'Russia']
 
-#Criar gráficos individuais por país
-for pais in paises:
-    pais_dados = dados[dados['location'] == pais]
+# Criar gráficos individuais por país
+for pais in paises_desejados:
+    pais_dados = dados_capes_cc[dados_capes_cc['location'] == pais]
 
-    # Encontrar o primeiro dia em que começou a vacinação
-    inicio_vacinacao = pais_dados[pais_dados['people_vaccinated'].notna()].date.min()
+    # Encontrar o primeiro dia com vacinação
+    inicio_vacinacao = pais_dados[pais_dados['people_vaccinated'].notna()]['date'].min()
 
-    # Plotando
+    # Plot
     plt.figure(figsize=(14,6))
     plt.plot(pais_dados['date'], pais_dados['new_deaths_smoothed'], label='Mortes diárias (suavizadas)', color='red')
-    plt.axvline(inicio_vacinacao, color='green', linestyle='--', label=f'Início da vacinação: {inicio_vacinacao.date()}')
+
+    if pd.notna(inicio_vacinacao):
+        plt.axvline(inicio_vacinacao, color='green', linestyle='--',
+                    label=f'Início da vacinação: {inicio_vacinacao.date()}')
+
     plt.title(f'{pais}: Mortes x Início da Vacinação')
     plt.xlabel('Data')
     plt.ylabel('Mortes por dia (média móvel)')
